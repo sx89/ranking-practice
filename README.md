@@ -3,6 +3,25 @@ redis基础与在线支付项目实战
 # Redis基础知识
 **基础命令多实践足矣,在此只总结一下探究性的知识**
 
+## redis五种数据类型的底层数据结构
+
+1. String/Int
+struct sdshdr{
+    int len;
+    int free;
+    char buf[];
+}
+
+2. Hash
+Map<String,Map<String,String>>;第一个String是区分多个Hash的名称
+3. List
+双端队列,可以进行lpush,lpop,rpush,rpop
+4. Set(数据不可重复,可以进行数据集的交叉并补)
+Map<String,Map<String,Object(空)>>
+5. SortSet(数据不可重复,有序)
+Map<String,Map<String,Object(空)>> + 跳表:如下图所示
+
+![跳表]()
 [mysql的ACID(redis没有)](https://blog.csdn.net/justloveyou_/article/details/70312810)
 [数据库的四种事务机制](https://www.cnblogs.com/jycboy/p/transaction.html)
 
