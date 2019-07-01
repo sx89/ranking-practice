@@ -20,8 +20,29 @@ Map<String,Map<String,String>>;第一个String是区分多个Hash的名称
 Map<String,Map<String,Object(空)>>
 5. SortSet(数据不可重复,有序)
 Map<String,Map<String,Object(空)>> + 跳表:如下图所示
+**跳表的性能和树差不多,但是比树占用的空间要少很多**
+![跳表](pic/Snipaste_2019-06-30_10-14-17_看图王.jpg)
+## 其他特性 
+### 订阅
+1. PUBLISH将信息message发送到指定的频道channe1。返回收到消息的客户端数量
+2. SUBSCRIBE订阅给指定频道的信息
+3. UNSUBSCRTBE取消订阅指定的频道，如果不指定，则取消订阅所有的频道。
 
-![跳表]()
+
+redis的消息订阅发布和mq对比？
+
+答：redis发布订阅功能比较薄弱但比较轻量级，mq消息持久化，数据可靠性比较差，无后台功能可msgId、msgKey进行查询消息
+
+### Redis事务机制
+1. MULTI 与 EXEC命令
+以 MULTI 开始一个事务，然后将多个命令入队到事务中， 最后由 EXEC 命令触发事务， 一并执行事务中的所有命令
+2. DISCARD命令
+DISCARD 命令用于取消一个事务， 它清空客户端的整个事务队列， 然后将客户端从事务状态调整回非事务状态， 最后返回字符串 OK 给客户端， 说明事务已被取消。
+3. WATCH命令
+WATCH 命令用于在事务开始之前监视任意数量的键： 当调用 EXEC 命令执行事务时， 如果任意一个被监视的键已经被其他客户端修改了， 那么整个事务不再执行， 直接返回失败。
+
+
+
 [mysql的ACID(redis没有)](https://blog.csdn.net/justloveyou_/article/details/70312810)
 [数据库的四种事务机制](https://www.cnblogs.com/jycboy/p/transaction.html)
 
