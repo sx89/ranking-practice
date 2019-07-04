@@ -1,5 +1,6 @@
 package com.sxfdu.redis.controller;
 
+import com.sxfdu.redis.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -18,6 +19,8 @@ public class RedisController {
     @Autowired
     RedisTemplate redisTemplate;
 
+    @Autowired
+    RedisService redisService;
     /**
      * 测试redis是否可用
      *
@@ -39,4 +42,13 @@ public class RedisController {
         Object o = valueOperations.get(key);
         return o.toString();
     }
+
+    @RequestMapping("/setAndGetKeyValueService")
+    @ResponseBody
+    public String setAndGetKeyValueService(String key, String value) {
+        redisService.set(key, value);
+        Object o = redisService.get(key);
+        return o.toString();
+    }
+
 }
