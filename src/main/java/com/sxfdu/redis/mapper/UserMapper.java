@@ -10,21 +10,21 @@ import java.util.List;
 @Component
 public interface UserMapper {
 
-	@Insert("insert sys_user(id,user_name) values(#{id},#{userName})")
-	void insert(User u);
-	
-	@Update("update sys_user set user_name = #{userName} where id=#{id} ")
-	void update(User u);
-	
-	@Delete("delete from sys_user where id=#{id} ")
-	void delete(@Param("id") String id);
+    @Insert("insert sys_user(id,user_name) values(#{id},#{userName})")
+    void insert(User u);
 
-	@Select("select id,user_name from sys_user where id=#{id} ")
-	User find(@Param("id") String id);
+    @Update("update sys_user set user_name = #{userName} where id=#{id} ")
+    void update(User u);
 
-	//注：方法名和要UserMapper.xml中的id一致
-	List<User> query(@Param("userName") String userName);
+    @Delete("delete from sys_user where id=#{id} ")
+    void delete(@Param("id") String id);
 
-	@Delete("delete from sys_user")
-	void deleteAll();
+    @Select("select id,user_name from sys_user where id=#{id} ")
+    User find(@Param("id") String id);
+
+    //注：方法名和要UserMapper.xml中的id一致
+    List<User> query(@Param("userName") String userName);
+
+    @Delete("delete from sys_user")
+    void deleteAll();
 }

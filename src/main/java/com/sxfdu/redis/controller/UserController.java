@@ -30,12 +30,13 @@ public class UserController {
 
     /**
      * 测试mybatis是否整合成功
+     *
      * @param id
      * @return
      */
     @RequestMapping("/getuser")
     @ResponseBody
-    public User getUser(@Param("id")String id) {
+    public User getUser(@Param("id") String id) {
 
         User user = userMapper.find(id);
         return user;
@@ -45,8 +46,8 @@ public class UserController {
     @RequestMapping("/getUserCache")
     @ResponseBody
     public User getUserCache(String id) {
-        String cacheKey = key+id;
-        User user = (User)redisService.get(cacheKey);
+        String cacheKey = key + id;
+        User user = (User) redisService.get(cacheKey);
         if (null == user) {
             User userDB = userMapper.find(cacheKey);
             System.out.println("缓存中木有,从数据库中获取数据");
@@ -58,6 +59,31 @@ public class UserController {
         return user;
     }
 
-    //TODO  还有 注解缓存  和  设置过期key需要实现
+
+    /**
+     * 使用了spring 缓存注解
+     *
+     * @param id
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("getByCache")
+    public User getByCache(String id) {
+        User user = userService.findById(id);
+        return user;
+    }
+
+    /**
+     * spring缓存注解+keygenerator生成
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping("getByCacheUniqueKey")
+    @ResponseBody
+    public User getByCacheUniqueKey(String id) {
+        User user = userService.findByIdTtl(id);
+        return user;
+    }
 
 }

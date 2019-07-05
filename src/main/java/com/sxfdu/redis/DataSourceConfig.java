@@ -25,7 +25,7 @@ import java.sql.SQLException;
 @Configuration
 @MapperScan("com.sxfdu.redis.mapper")
 //因为HTTP无状态,所以用SessionId用于区分不同浏览器的请求,sessionId存储在cookie里面
-@EnableRedisHttpSession(maxInactiveIntervalInSeconds= 50)
+@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 50)
 public class DataSourceConfig {
     private Logger logger = LoggerFactory.getLogger(DataSourceConfig.class);
 
@@ -92,10 +92,10 @@ public class DataSourceConfig {
     @Value("${spring.datasource.druidPassword}")
     private String druidPassword;
 
-//    @Bean(name="dataSource",destroyMethod = "close", initMethod="init")
-    @Bean(name="dataSource")
+    //    @Bean(name="dataSource",destroyMethod = "close", initMethod="init")
+    @Bean(name = "dataSource")
     @Primary //不要漏了这
-    public DataSource dataSource(){
+    public DataSource dataSource() {
         DruidDataSource datasource = new DruidDataSource();
         try {
             datasource.setUrl(this.dbUrl);
@@ -135,7 +135,7 @@ public class DataSourceConfig {
         return reg;
     }
 
-    @Bean(name="druidWebStatFilter")
+    @Bean(name = "druidWebStatFilter")
     public FilterRegistrationBean filterRegistrationBean() {
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
         filterRegistrationBean.setFilter(new WebStatFilter());

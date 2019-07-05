@@ -21,9 +21,10 @@ public class RedisController {
 
     @Autowired
     RedisService redisService;
+
     /**
      * 测试redis是否可用
-     *
+     * <p>
      * 导入依赖
      * 创建redisTemplate
      * 拿到方法类

@@ -1,13 +1,13 @@
 package com.sxfdu.redis.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.sql.Time;
-import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -19,17 +19,15 @@ import java.util.concurrent.TimeUnit;
 @Service
 
 public class RedisService {
+    private static double size = Math.pow(2, 32);
     @Autowired
     private RedisTemplate redisTemplate;
-
-    private static double size = Math.pow(2, 32);
-
 
     /**
      * 写入缓存
      *
      * @param key
-     * @param offset   位 8Bit=1Byte
+     * @param offset 位 8Bit=1Byte
      * @return
      */
     public boolean setBit(String key, long offset, boolean isShow) {
@@ -64,6 +62,7 @@ public class RedisService {
 
     /**
      * 写入缓存
+     *
      * @param key
      * @param value
      * @return
@@ -83,6 +82,7 @@ public class RedisService {
 
     /**
      * 设置写入缓存时间的set
+     *
      * @param key
      * @param value
      * @param expireTime
@@ -104,6 +104,7 @@ public class RedisService {
 
     /**
      * 查看key值是否存在
+     *
      * @param key
      * @return
      */
@@ -111,7 +112,7 @@ public class RedisService {
         boolean result = false;
         try {
             result = redisTemplate.hasKey(key);
-            return  result;
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -120,6 +121,7 @@ public class RedisService {
 
     /**
      * 删除key
+     *
      * @param key
      * @return
      */
@@ -133,7 +135,8 @@ public class RedisService {
     }
 
     /**
-     *批量删除key
+     * 批量删除key
+     *
      * @param keys
      * @return
      */
@@ -155,7 +158,6 @@ public class RedisService {
         ValueOperations valueOperations = redisTemplate.opsForValue();
         return valueOperations.get(key);
     }
-
 
 
     /**
