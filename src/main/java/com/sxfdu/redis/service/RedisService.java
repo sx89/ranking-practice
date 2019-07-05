@@ -68,7 +68,7 @@ public class RedisService {
      * @param value
      * @return
      */
-    public boolean set(String key, String value) {
+    public boolean set(String key, Object value) {
         boolean result = false;
 
         try {

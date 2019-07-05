@@ -2,6 +2,8 @@ package com.sxfdu.redis.controller;
 
 import com.sxfdu.redis.domain.User;
 import com.sxfdu.redis.mapper.UserMapper;
+import com.sxfdu.redis.service.RedisService;
+import com.sxfdu.redis.service.UserService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,8 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UserController {
+    private static final String key = "userCache_";
+
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private RedisService redisService;
 
     /**
      * 测试mybatis是否整合成功
@@ -30,4 +40,24 @@ public class UserController {
         User user = userMapper.find(id);
         return user;
     }
+
+
+    @RequestMapping("/getUserCache")
+    @ResponseBody
+    public User getUserCache(String id) {
+        String cacheKey = key+id;
+        User user = (User)redisService.get(cacheKey);
+        if (null == user) {
+            User userDB = userMapper.find(cacheKey);
+            System.out.println("缓存中木有,从数据库中获取数据");
+            if (null != userDB) {
+                redisService.set(cacheKey, userDB);
+            }
+            return userDB;
+        }
+        return user;
+    }
+
+    //TODO  还有 注解缓存  和  设置过期key需要实现
+
 }
