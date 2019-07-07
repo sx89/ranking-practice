@@ -1,13 +1,12 @@
 package com.sxfdu.redis.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.ListOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,7 +26,7 @@ public class RedisService {
      * 写入缓存
      *
      * @param key
-     * @param offset 位 8Bit=1Byte
+     * @param offset   位 8Bit=1Byte
      * @return
      */
     public boolean setBit(String key, long offset, boolean isShow) {
@@ -60,6 +59,7 @@ public class RedisService {
         return result;
     }
 
+
     /**
      * 写入缓存
      *
@@ -67,13 +67,12 @@ public class RedisService {
      * @param value
      * @return
      */
-    public boolean set(String key, Object value) {
+    public boolean set(final String key, Object value) {
         boolean result = false;
-
         try {
-            ValueOperations valueOperations = redisTemplate.opsForValue();
-            valueOperations.set(key, value);
-            return result;
+            ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
+            operations.set(key, value);
+            result = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -81,38 +80,19 @@ public class RedisService {
     }
 
     /**
-     * 设置写入缓存时间的set
+     * 写入缓存设置时效时间
      *
      * @param key
      * @param value
-     * @param expireTime
      * @return
      */
-    public boolean set(String key, String value, Long expireTime) {
+    public boolean set(final String key, Object value, Long expireTime) {
         boolean result = false;
         try {
-            ValueOperations valueOperations = redisTemplate.opsForValue();
-            valueOperations.set(key, value);
+            ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
+            operations.set(key, value);
             redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
-
-    }
-
-    /**
-     * 查看key值是否存在
-     *
-     * @param key
-     * @return
-     */
-    public boolean exist(final String key) {
-        boolean result = false;
-        try {
-            result = redisTemplate.hasKey(key);
-            return result;
+            result = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -120,45 +100,52 @@ public class RedisService {
     }
 
     /**
-     * 删除key
-     *
-     * @param key
-     * @return
-     */
-    public boolean remove(final String key) {
-        if (exist(key)) {
-            return redisTemplate.delete(key);
-        } else {
-            return false;
-        }
-
-    }
-
-    /**
-     * 批量删除key
+     * 批量删除对应的value
      *
      * @param keys
+     */
+    public void remove(final String... keys) {
+        for (String key : keys) {
+            remove(key);
+        }
+    }
+
+
+    /**
+     * 删除对应的value
+     *
+     * @param key
+     */
+    public void remove(final String key) {
+        if (exists(key)) {
+            redisTemplate.delete(key);
+        }
+    }
+
+
+
+    /**
+     * 判断缓存中是否有对应的value
+     *
+     * @param key
      * @return
      */
-    public boolean remove(final String... keys) {
-        try {
-            for (String temp : keys) {
-                if (exist(temp)) {
-                    remove(keys);
-                }
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+    public boolean exists(final String key) {
+        return redisTemplate.hasKey(key);
     }
 
+    /**
+     * 读取缓存
+     *
+     * @param key
+     * @return
+     */
     public Object get(final String key) {
-        ValueOperations valueOperations = redisTemplate.opsForValue();
-        return valueOperations.get(key);
+        Object result = null;
+        ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
+        result = operations.get(key);
+        return result;
     }
-
 
     /**
      * 哈希 添加
@@ -195,5 +182,151 @@ public class RedisService {
         list.rightPush(k, v);
     }
 
+    /**
+     * 列表获取
+     *
+     * @param k
+     * @param l
+     * @param l1
+     * @return
+     */
+    public List<Object> lRange(String k, long l, long l1) {
+        ListOperations<String, Object> list = redisTemplate.opsForList();
+        return list.range(k, l, l1);
+    }
+
+    /**
+     * 集合添加
+     *
+     * @param key
+     * @param value
+     */
+    public void add(String key, Object value) {
+        SetOperations<String, Object> set = redisTemplate.opsForSet();
+        set.add(key, value);
+    }
+
+    /**
+     * 集合获取
+     *
+     * @param key
+     * @return
+     */
+    public Set<Object> setMembers(String key) {
+        SetOperations<String, Object> set = redisTemplate.opsForSet();
+        return set.members(key);
+    }
+
+    /**
+     * 有序集合添加
+     *
+     * @param key
+     * @param value
+     * @param scoure
+     */
+    public void zAdd(String key, Object value, double scoure) {
+        ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
+        zset.add(key, value, scoure);
+    }
+
+    /**
+     * 有序集合获取
+     *
+     * @param key
+     * @param scoure
+     * @param scoure1
+     * @return
+     */
+    public Set<Object> rangeByScore(String key, double scoure, double scoure1) {
+        ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
+        redisTemplate.opsForValue();
+        return zset.rangeByScore(key, scoure, scoure1);
+    }
+
+
+    //第一次加载的时候将数据加载到redis中
+    public void saveDataToRedis(String name) {
+        double index = Math.abs(name.hashCode() % size);
+        long indexLong = new Double(index).longValue();
+        boolean availableUsers = setBit("availableUsers", indexLong, true);
+    }
+
+    //第一次加载的时候将数据加载到redis中
+    public boolean getDataToRedis(String name) {
+
+        double index = Math.abs(name.hashCode() % size);
+        long indexLong = new Double(index).longValue();
+        return getBit("availableUsers", indexLong);
+    }
+
+    /**
+     * 有序集合获取排名
+     *
+     * @param key 集合名称
+     * @param value 值
+     */
+    public Long zRank(String key, Object value) {
+        ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
+        return zset.rank(key,value);
+    }
+
+
+    /**
+     * 有序集合获取排名
+     *
+     * @param key
+     */
+    public Set<ZSetOperations.TypedTuple<Object>> zRankWithScore(String key, long start,long end) {
+        ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
+        Set<ZSetOperations.TypedTuple<Object>> ret = zset.rangeWithScores(key,start,end);
+        return ret;
+    }
+
+    /**
+     * 有序集合添加
+     *
+     * @param key
+     * @param value
+     */
+    public Double zSetScore(String key, Object value) {
+        ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
+        return zset.score(key,value);
+    }
+
+
+    /**
+     * 有序集合添加分数
+     *
+     * @param key
+     * @param value
+     * @param scoure
+     */
+    public void incrementScore(String key, Object value, double scoure) {
+        ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
+        zset.incrementScore(key, value, scoure);
+    }
+
+
+    /**
+     * 有序集合获取排名
+     *
+     * @param key
+     */
+    public Set<ZSetOperations.TypedTuple<Object>> reverseZRankWithScore(String key, long start,long end) {
+        ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
+        Set<ZSetOperations.TypedTuple<Object>> ret = zset.reverseRangeByScoreWithScores(key,start,end);
+        return ret;
+    }
+
+    /**
+     * 有序集合获取排名
+     *
+     * @param key
+     */
+    public Set<ZSetOperations.TypedTuple<Object>> reverseZRankWithRank(String key, long start, long end) {
+        ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
+        Set<ZSetOperations.TypedTuple<Object>> ret = zset.reverseRangeWithScores(key, start, end);
+        return ret;
+    }
 
 }
