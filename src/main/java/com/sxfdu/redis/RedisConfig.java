@@ -52,6 +52,12 @@ public class RedisConfig {
         };
     }
 
+    /**
+     * 设置超时时间
+     * @param redisConnectionFactory
+     * @return
+     */
+
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
         return new RedisCacheManager(
@@ -69,6 +75,11 @@ public class RedisConfig {
         return redisCacheConfigurationMap;
     }
 
+    /**
+     * 以jason格式存进redis
+     * @param seconds
+     * @return
+     */
     private RedisCacheConfiguration getRedisCacheConfigurationWithTtl(Integer seconds) {
         Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
         ObjectMapper om = new ObjectMapper();

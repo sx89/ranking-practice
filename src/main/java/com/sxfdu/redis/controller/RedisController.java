@@ -43,6 +43,7 @@ public class RedisController {
 
         return o.toString();
     }
+
     @RequestMapping("/setAndGetKeyValueService")
     @ResponseBody
     public String setAndGetKeyValueService(String key, String value) {
@@ -50,5 +51,6 @@ public class RedisController {
         Object o = redisService.get(key);
         return o.toString();
     }
+
 
 }
