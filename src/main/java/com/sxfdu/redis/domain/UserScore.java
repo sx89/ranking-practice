@@ -6,9 +6,12 @@ package com.sxfdu.redis.domain;
  */
 public class UserScore {
     private Integer id;
-    private String userName;
+
     private Integer userId;
-    private Long score;
+
+    private Long userScore;
+
+    private String name;
 
     public Integer getId() {
         return id;
@@ -16,14 +19,6 @@ public class UserScore {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public Integer getUserId() {
@@ -34,30 +29,44 @@ public class UserScore {
         this.userId = userId;
     }
 
-    public Long getScore() {
-        return score;
+    public Long getUserScore() {
+        return userScore;
     }
 
-    public void setScore(Long score) {
-        this.score = score;
+    public void setUserScore(Long userScore) {
+        this.userScore = userScore;
     }
-    public UserScore() {
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
     public String toString() {
-        return "UserScore{" +
-                "id=" + id +
-                ", userName='" + userName + '\'' +
-                ", userId=" + userId +
-                ", score=" + score +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append(" [");
+        sb.append("Hash = ").append(hashCode());
+        sb.append(", id=").append(id);
+        sb.append(", userId=").append(userId);
+        sb.append(", userScore=").append(userScore);
+        sb.append(", name=").append(name);
+        sb.append("]");
+        return sb.toString();
     }
 
-    public UserScore(Integer id, String userName, Integer userId, Long score) {
-        this.id = id;
-        this.userName = userName;
+
+    public UserScore(Integer userId, Long userScore, String name) {
         this.userId = userId;
-        this.score = score;
+        this.userScore = userScore;
+        this.name = name;
+    }
+
+    public UserScore(){
+
     }
 }
