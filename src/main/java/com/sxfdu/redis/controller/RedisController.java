@@ -21,7 +21,6 @@ public class RedisController {
 
     @Autowired
     RedisService redisService;
-
     /**
      * 测试redis是否可用
      * <p>
@@ -41,9 +40,9 @@ public class RedisController {
         ValueOperations valueOperations = redisTemplate.opsForValue();
         valueOperations.set(key, value);
         Object o = valueOperations.get(key);
+
         return o.toString();
     }
-
     @RequestMapping("/setAndGetKeyValueService")
     @ResponseBody
     public String setAndGetKeyValueService(String key, String value) {
