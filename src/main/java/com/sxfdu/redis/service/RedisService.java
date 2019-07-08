@@ -288,7 +288,7 @@ public class RedisService {
      * @param key
      * @param value
      */
-    public Double zSetScore(String key, Object value) {
+    public Double zGetScore(String key, Object value) {
         ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
         return zset.score(key,value);
     }

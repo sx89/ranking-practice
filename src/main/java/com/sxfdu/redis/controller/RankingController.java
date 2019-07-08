@@ -25,6 +25,7 @@ public class RankingController {
     @ResponseBody
     @RequestMapping("/addScore")
     public String addRank(String uid, Integer score) {
+        System.err.println("即将添加score");
         rankingService.rankAdd(uid, score);
         return "success";
     }
@@ -34,7 +35,7 @@ public class RankingController {
     @ResponseBody
     @RequestMapping("/increScore")
     public String increScore(String uid, Integer score) {
-        rankingService.increSocre(uid, score);
+        rankingService.increScore(uid, score);
         return "success";
     }
 
@@ -49,7 +50,7 @@ public class RankingController {
     @ResponseBody
     @RequestMapping("/score")
     public Long rankNum(String uid) {
-        return rankingService.score(uid);
+        return rankingService.getScore(uid);
     }
 
     @ResponseBody

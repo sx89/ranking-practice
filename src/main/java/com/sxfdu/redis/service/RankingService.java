@@ -5,6 +5,7 @@ import com.sxfdu.redis.mapper.UserMapper;
 import com.sxfdu.redis.mapper.UserScoreMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
@@ -12,45 +13,34 @@ import java.util.Set;
  * @author sunxu93@163.com
  * @date 19/7/7/007 17:22
  */
+@Service
 public class RankingService {
 
-
-    private static final String RANKGNAME = "user_score";
-
-    private static final String SALESCORE = "sale_score_rank:";
-
+    public static final String RANKING_NAME = "user_score";
+    public static final String SALESCORE = "sale_score_rank:";
     @Autowired
     private RedisService redisService;
 
-    @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
-    private ScoreFlowMapper scoreFlowMapper;
-
-    @Autowired
-    private UserScoreMapper userScoreMapper;
-
-
     public void rankAdd(String uid, Integer score) {
-        redisService.zAdd(RANKGNAME, uid, score);
+        redisService.zAdd(RANKING_NAME,uid, score);
     }
 
-    public void increSocre(String uid, Integer score) {
-
-        redisService.incrementScore(RANKGNAME, uid, score);
+    public void increScore(String uid, Integer score) {
+        redisService.incrementScore(RANKING_NAME, uid, score);
     }
 
     public Long rankNum(String uid) {
-        return redisService.zRank(RANKGNAME, uid);
+        Long num = redisService.zRank(RANKING_NAME, uid);
+        return num;
     }
 
-    public Long score(String uid) {
-        Long score = redisService.zSetScore(RANKGNAME, uid).longValue();
-        return score;
+    public Long getScore(String uid) {
+        Double score = redisService.zGetScore(RANKING_NAME, uid);
+        return score.longValue();
     }
 
     public Set<ZSetOperations.TypedTuple<Object>> rankWithScore(Integer start, Integer end) {
-        return redisService.zRankWithScore(RANKGNAME, start, end);
+        Set<ZSetOperations.TypedTuple<Object>> typedTuples = redisService.zRankWithScore(RANKING_NAME, start, end);
+        return typedTuples;
     }
 }

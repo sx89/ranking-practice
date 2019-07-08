@@ -41,6 +41,7 @@ public class RedisController {
         valueOperations.set(key, value);
         Object o = valueOperations.get(key);
 
+        
         return o.toString();
     }
 
