@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,7 +26,6 @@ public class RankingController {
     @ResponseBody
     @RequestMapping("/addScore")
     public String addRank(String uid, Integer score) {
-        System.err.println("即将添加score");
         rankingService.rankAdd(uid, score);
         return "success";
     }
@@ -57,6 +57,35 @@ public class RankingController {
     @RequestMapping("/scoreByRange")
     public Set<ZSetOperations.TypedTuple<Object>> scoreByRange(Integer start, Integer end) {
         return rankingService.rankWithScore(start,end);
+    }
+
+
+
+    @ResponseBody
+    @RequestMapping("/sale/increScore")
+    public String increSaleScore(String uid, Integer score) {
+        rankingService.increSaleScore(uid, score);
+        return "success";
+    }
+
+
+    @ResponseBody
+    @RequestMapping("/sale/userScore")
+    public Map<String,Object> userScore(String uid,String name) {
+        return rankingService.userRank(uid,name);
+    }
+
+    @ResponseBody
+    @RequestMapping("/sale/top")
+    public List<Map<String,Object>> reverseZRankWithRank(long start, long end) {
+        return rankingService.reverseZRankWithRank(start,end);
+    }
+
+
+    @ResponseBody
+    @RequestMapping("/sale/scoreByRange")
+    public List<Map<String,Object>> saleScoreByRange(Integer start, Integer end) {
+        return rankingService.saleRankWithScore(start,end);
     }
 
 }

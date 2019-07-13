@@ -56,8 +56,7 @@ public class ScoreFlow {
     public ScoreFlow() {
     }
 
-    public ScoreFlow(Integer id, Long score, String userName, Integer userId) {
-        this.id = id;
+    public ScoreFlow( Long score, String userName, Integer userId) {
         this.score = score;
         this.userName = userName;
         this.userId = userId;
