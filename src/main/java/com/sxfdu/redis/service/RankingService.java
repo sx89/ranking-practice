@@ -7,6 +7,7 @@ import com.sxfdu.redis.domain.UserScoreExample;
 import com.sxfdu.redis.mapper.ScoreFlowMapper;
 import com.sxfdu.redis.mapper.UserMapper;
 import com.sxfdu.redis.mapper.UserScoreMapper;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -23,10 +24,10 @@ import java.util.stream.Collectors;
  * @date 19/7/7/007 17:22
  */
 @Service
-public class RankingService {
+public class RankingService implements InitializingBean {
 
     public static final String RANKING_NAME = "user_score";
-    public static final String SALE_SCORE = "sale_score_rank:";
+    public static final String SALE_SCORE = "sale_score_rank";
     @Autowired
     private RedisService redisService;
 
@@ -152,4 +153,9 @@ public class RankingService {
         return mapList;
     }
 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        System.out.println("实现热加载,避免redis中有数据,却因为启动延迟,导致大量访问mysql");
+        this.rankSaleAdd();
+    }
 }
