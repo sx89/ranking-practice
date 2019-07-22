@@ -155,7 +155,11 @@ public class RankingService implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        System.out.println("实现热加载,避免redis中有数据,却因为启动延迟,导致大量访问mysql");
+        /**
+         * "实现预热加载,initialBean接口的实现方法afterPropertiesSet()  会在初始化bean的所有属性之后运行,
+         * 这个时候,springapplication.run还没有运行,就可以保证  在接受请求之前(springapplication运行之前)
+         * 就通过this.rankSaleAdd()把数据加载到redis,"
+         */
         this.rankSaleAdd();
     }
 }
